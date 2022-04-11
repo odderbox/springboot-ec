@@ -21,12 +21,18 @@ public class ProductController {
 
     @GetMapping("/products")
     public ResponseEntity<List<Product>> getProducts(
+            // 查詢條件
             @RequestParam(required = false) String search,
-            @RequestParam(required = false) ProductCategory category
+            @RequestParam(required = false) ProductCategory category,
+            // 排序
+            @RequestParam(defaultValue = "created_date") String orderBy,
+            @RequestParam(defaultValue = "desc") String sort
     ){
         ProductQueryParams params = new ProductQueryParams();
         params.setSearch(search);
         params.setCategory(category);
+        params.setOrderBy(orderBy);
+        params.setSort(sort);
         List<Product> productList = productService.getProducts(params);
         return ResponseEntity.status(HttpStatus.OK).body(productList);
     }
