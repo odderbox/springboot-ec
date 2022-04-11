@@ -1,5 +1,6 @@
 package com.hhchen.springbootec.controller;
 
+import com.hhchen.springbootec.constant.ProductCategory;
 import com.hhchen.springbootec.dto.ProductRequest;
 import com.hhchen.springbootec.model.Product;
 import com.hhchen.springbootec.service.ProductService;
@@ -18,8 +19,11 @@ public class ProductController {
     private ProductService productService;
 
     @GetMapping("/products")
-    public ResponseEntity<List<Product>> getProducts(){
-        List<Product> productList = productService.getProducts();
+    public ResponseEntity<List<Product>> getProducts(
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) ProductCategory category
+    ){
+        List<Product> productList = productService.getProducts(search, category);
         return ResponseEntity.status(HttpStatus.OK).body(productList);
     }
 
