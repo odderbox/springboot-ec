@@ -1,7 +1,7 @@
 package com.hhchen.springbootec.service.impl;
 
-import com.hhchen.springbootec.constant.ProductCategory;
 import com.hhchen.springbootec.dao.ProductDao;
+import com.hhchen.springbootec.dto.ProductQueryParams;
 import com.hhchen.springbootec.dto.ProductRequest;
 import com.hhchen.springbootec.model.Product;
 import com.hhchen.springbootec.service.ProductService;
@@ -17,8 +17,8 @@ public class ProductServiceImpl implements ProductService {
     private ProductDao productDao;
 
     @Override
-    public List<Product> getProducts(String search, ProductCategory category) {
-        return productDao.getProducts(search, category);
+    public List<Product> getProducts(ProductQueryParams params) {
+        return productDao.getProducts(params);
     }
 
     @Override

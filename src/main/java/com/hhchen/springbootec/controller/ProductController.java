@@ -1,6 +1,7 @@
 package com.hhchen.springbootec.controller;
 
 import com.hhchen.springbootec.constant.ProductCategory;
+import com.hhchen.springbootec.dto.ProductQueryParams;
 import com.hhchen.springbootec.dto.ProductRequest;
 import com.hhchen.springbootec.model.Product;
 import com.hhchen.springbootec.service.ProductService;
@@ -23,7 +24,10 @@ public class ProductController {
             @RequestParam(required = false) String search,
             @RequestParam(required = false) ProductCategory category
     ){
-        List<Product> productList = productService.getProducts(search, category);
+        ProductQueryParams params = new ProductQueryParams();
+        params.setSearch(search);
+        params.setCategory(category);
+        List<Product> productList = productService.getProducts(params);
         return ResponseEntity.status(HttpStatus.OK).body(productList);
     }
 
