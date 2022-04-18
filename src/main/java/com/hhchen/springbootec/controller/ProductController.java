@@ -5,6 +5,7 @@ import com.hhchen.springbootec.dto.ProductQueryParams;
 import com.hhchen.springbootec.dto.ProductRequest;
 import com.hhchen.springbootec.model.Product;
 import com.hhchen.springbootec.service.ProductService;
+import com.hhchen.springbootec.util.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,7 @@ public class ProductController {
     private ProductService productService;
 
     @GetMapping("/products")
-    public ResponseEntity<List<Product>> getProducts(
+    public ResponseEntity<Page<Product>> getProducts(
             // 查詢條件
             @RequestParam(required = false) String search,
             @RequestParam(required = false) ProductCategory category,
@@ -43,7 +44,15 @@ public class ProductController {
         params.setLimit(limit);
         params.setOffset(offset);
         List<Product> productList = productService.getProducts(params);
-        return ResponseEntity.status(HttpStatus.OK).body(productList);
+
+        Integer total = productService.countProduct(params);
+
+        Page<Product> page = new Page<>();
+        page.setLimit(limit);
+        page.setOffset(offset);
+        page.setTotal(total);
+        page.setResults(productList);
+        return ResponseEntity.status(HttpStatus.OK).body(page);
     }
 
 
