@@ -1,5 +1,6 @@
 package com.hhchen.springbootec.controller;
 
+import com.hhchen.springbootec.dto.UserLoginRequest;
 import com.hhchen.springbootec.dto.UserRegisterRequest;
 import com.hhchen.springbootec.model.User;
 import com.hhchen.springbootec.service.UserService;
@@ -25,5 +26,12 @@ public class UserController {
         User user = userService.getUserById(userId);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(user);
+    }
+
+    @PostMapping("/users/login")
+    public ResponseEntity<User> login(@RequestBody UserLoginRequest userLoginRequest){
+        User user = userService.login(userLoginRequest);
+        return ResponseEntity.status(HttpStatus.OK).body(user);
+
     }
 }

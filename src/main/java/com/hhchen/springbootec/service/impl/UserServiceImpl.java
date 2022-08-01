@@ -1,6 +1,7 @@
 package com.hhchen.springbootec.service.impl;
 
 import com.hhchen.springbootec.dao.UserDao;
+import com.hhchen.springbootec.dto.UserLoginRequest;
 import com.hhchen.springbootec.dto.UserRegisterRequest;
 import com.hhchen.springbootec.model.User;
 import com.hhchen.springbootec.service.UserService;
@@ -36,5 +37,20 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUserById(Integer userId) {
         return userDao.getUserById(userId);
+    }
+
+    public User login(UserLoginRequest userLoginRequest){
+        User user = userDao.getUserByEmail(userLoginRequest.getEmail());
+        if(user == null){
+            log.warn("該Email {} 尚未註冊",userLoginRequest.getEmail());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }else{
+            if(user.getPassword().equals(userLoginRequest.getPassword())) {
+                return user;
+            }else{
+                log.warn("此email {} 的密碼不正確",userLoginRequest.getEmail());
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            }
+        }
     }
 }
