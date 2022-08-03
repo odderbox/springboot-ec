@@ -5,6 +5,7 @@ import com.hhchen.springbootec.dao.ProductDao;
 import com.hhchen.springbootec.dao.UserDao;
 import com.hhchen.springbootec.dto.BuyItem;
 import com.hhchen.springbootec.dto.CreateOrderRequest;
+import com.hhchen.springbootec.dto.OrderQueryParams;
 import com.hhchen.springbootec.model.Order;
 import com.hhchen.springbootec.model.OrderItem;
 import com.hhchen.springbootec.model.Product;
@@ -89,5 +90,21 @@ public class OrderServiceImpl implements OrderService {
         orderDao.createOrderItems(orderId, orderItemList);
 
         return orderId;
+    }
+
+    @Override
+    public List<Order> getOrders(OrderQueryParams orderQueryParams) {
+        List<Order> orderList = orderDao.getOrders(orderQueryParams);
+
+        for(Order order : orderList){
+            List<OrderItem> orderItemList = orderDao.getOrderItemByOrderId(order.getOrderId());
+            order.setOrderItemList(orderItemList);
+        }
+        return orderList;
+    }
+
+    @Override
+    public Integer countOrder(OrderQueryParams orderQueryParams) {
+        return orderDao.countOrder(orderQueryParams);
     }
 }

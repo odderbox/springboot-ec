@@ -1,5 +1,6 @@
 package com.hhchen.springbootec.dao;
 
+import com.hhchen.springbootec.dto.OrderQueryParams;
 import com.hhchen.springbootec.model.Order;
 import com.hhchen.springbootec.model.OrderItem;
 
@@ -14,5 +15,9 @@ public interface  OrderDao {
     Integer createOrder(Integer userId, Integer totalAmount);
 
     void createOrderItems(Integer orderId, List<OrderItem> orderItemList);
+
+    List<Order> getOrders(OrderQueryParams orderQueryParams);
+
+    Integer countOrder(OrderQueryParams orderQueryParams);
 
 }

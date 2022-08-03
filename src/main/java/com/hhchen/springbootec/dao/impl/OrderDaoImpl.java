@@ -1,6 +1,7 @@
 package com.hhchen.springbootec.dao.impl;
 
 import com.hhchen.springbootec.dao.OrderDao;
+import com.hhchen.springbootec.dto.OrderQueryParams;
 import com.hhchen.springbootec.model.Order;
 import com.hhchen.springbootec.model.OrderItem;
 import com.hhchen.springbootec.rowmapper.OrderItemRowMapper;
@@ -12,7 +13,6 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
-import javax.print.attribute.HashPrintJobAttributeSet;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -96,5 +96,48 @@ public class OrderDaoImpl implements OrderDao {
             parameterSources[i].addValue("amount", orderItem.getAmount());
         }
         namedParameterJdbcTemplate.batchUpdate(sql, parameterSources);
+    }
+
+    @Override
+    public List<Order> getOrders(OrderQueryParams orderQueryParams) {
+
+        String sql = "SELECT order_id, user_id, total_amount, created_date, last_modified_date FROM `order` WHERE 1=1 ";
+
+        Map<String, Object> map = new HashMap<>();
+
+        // 查詢條件
+        sql = addFilterinSql(sql, map, orderQueryParams);
+
+        // 排序
+        sql += "ORDER BY created_date DESC ";
+
+        // 分頁
+        sql += "LIMIT :limit OFFSET :offset";
+        map.put("limit", orderQueryParams.getLimit());
+        map.put("offset", orderQueryParams.getOffset());
+
+        List<Order> orderList = namedParameterJdbcTemplate.query(sql, map, new OrderRowMapper());
+        return orderList;
+    }
+
+    @Override
+    public Integer countOrder(OrderQueryParams orderQueryParams) {
+        String sql = "SELECT count(*) FROM `order` WHERE 1=1 ";
+
+        Map<String, Object> map = new HashMap<>();
+
+        sql = addFilterinSql(sql, map, orderQueryParams);
+
+        Integer total = namedParameterJdbcTemplate.queryForObject(sql, map, Integer.class);
+
+        return total;
+    }
+
+    public String addFilterinSql(String sql, Map<String, Object> map, OrderQueryParams orderQueryParams) {
+        if(orderQueryParams.getUserId() != null){
+            sql += "AND user_id = :userId ";
+            map.put("userId", orderQueryParams.getUserId());
+        }
+        return sql;
     }
 }
